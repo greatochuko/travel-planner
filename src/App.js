@@ -14,7 +14,6 @@ export default function App() {
 
   return (
     <div className="app">
-      <>hello</>
       <Header />
       <Form itemList={itemList} setItemList={setItemList} />
       <List itemList={itemList} setItemList={setItemList} />
