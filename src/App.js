@@ -5,7 +5,8 @@ const myArr = createArray(20);
 
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: false },
+  { id: 2, description: "Socks", quantity: 12, packed: true },
+  { id: 3, description: "Shoes", quantity: 3, packed: false },
 ];
 
 export default function App() {
@@ -13,92 +14,92 @@ export default function App() {
 
   return (
     <div className="app">
+      <>hello</>
       <Header />
-      <ItemForm currentList={itemList} setItemFunction={setItemList} />
-      <List currentList={itemList} />
-    </div>
-  );
-}
-
-function List(props) {
-  return (
-    <div className="list">
-      <ul>
-        {props.currentList.map((item) => {
-          return (
-            <Item
-              quantity={item.quantity}
-              key={item.id}
-              item={item.description}
-              description={item.description}
-            />
-          );
-        })}
-      </ul>
+      <Form itemList={itemList} setItemList={setItemList} />
+      <List itemList={itemList} setItemList={setItemList} />
+      <Stats />
     </div>
   );
 }
 
 function Header() {
-  return (
-    <header>
-      <h1>🌴 Travel Planner 💼</h1>
-    </header>
-  );
+  return <h1>🌴My Travel Planner💼</h1>;
 }
 
-function ItemForm(props) {
-  const [itemNumber, setItemNumber] = useState(1);
-  const [item, setItem] = useState("");
+function Form({ itemList, setItemList }) {
+  const [quantity, setQuantity] = useState(1);
+  const [description, setDescription] = useState("");
 
-  function addItem(event) {
-    event.preventDefault();
-    if (item !== "") {
-      console.log("Item Number: ", itemNumber, "Item: ", item);
-      props.setItemFunction([
-        ...props.currentList,
-        {
-          id: 3,
-          description: item,
-          quantity: Number(itemNumber),
-          packed: false,
-        },
-      ]);
-      setItem("");
-      setItemNumber(1);
-    }
+  function addItem(e) {
+    e.preventDefault();
+    const date = new Date();
+    const newItem = {
+      id: date,
+      description: description,
+      quantity: quantity,
+      packed: false,
+    };
+    setItemList([...itemList, newItem]);
   }
 
   return (
     <form className="add-form" onSubmit={addItem}>
+      <h3>What do you need for your 😍 trip?</h3>
       <select
-        value={itemNumber}
-        onChange={(event) => setItemNumber(event.target.value)}
+        value={quantity}
+        onChange={(e) => setQuantity(Number(e.target.value))}
       >
         {myArr.map((num) => {
-          return (
-            <option key={num} value={num}>
-              {num}
-            </option>
-          );
+          return <option>{num}</option>;
         })}
       </select>
       <input
-        type="text"
-        value={item}
-        onChange={(event) => setItem(event.target.value)}
+        placeholder="Add something..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
-      <button type="submit">Add Item</button>
+      <button type="submit">Add</button>
     </form>
   );
 }
 
-function Item({ quantity, description, isPacked }) {
+function List({ itemList, setItemList }) {
+  function handleDelete(id) {
+    setItemList(itemList.slice().filter((item) => item.id !== id));
+  }
+
   return (
-    <li className={isPacked ? "is-packed" : ""}>
-      <input type="checkbox" />
-      {quantity} {description}
-      <button>❌</button>
-    </li>
+    <div className="list">
+      <ul>
+        {itemList.map((item) => {
+          return (
+            <li>
+              <input type="checkbox" />
+              <span>
+                {item.quantity} {item.description}
+              </span>
+              <button onClick={() => handleDelete(item.id)}>❌</button>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="actions">
+        <select>
+          <option>Sort by Input Order</option>
+          <option>Sort by Description</option>
+          <option>Sort by Packed Status</option>
+        </select>
+        <button>Clear List</button>
+      </div>
+    </div>
+  );
+}
+
+function Stats() {
+  return (
+    <footer className="stats">
+      Start adding some items to your packing list 🚀
+    </footer>
   );
 }
