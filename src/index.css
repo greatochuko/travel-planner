@@ -115,7 +115,7 @@ input {
   gap: 1.2rem;
 }
 
-.list li.is-packed {
+.list li .packed {
   text-decoration: line-through;
 }
 
